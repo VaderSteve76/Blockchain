@@ -82,7 +82,11 @@ class Blockchain(object):
         - p is the previous proof, and p' is the new proof
         """
 
-        pass
+        proof = 0
+        while self.valid_proof(last_proof, proof) is False:
+            proof += 1
+
+        return proof
 
     @staticmethod
     def valid_proof(last_proof, proof):
@@ -90,8 +94,10 @@ class Blockchain(object):
         Validates the Proof:  Does hash(last_proof, proof) contain 4
         leading zeroes?
         """
-        # TODO
-        pass
+        guess = f'{last_proof}{proof}'.encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+
+        return guess_hash[:4] == '0000'
 
     def valid_chain(self, chain):
         """
@@ -149,11 +155,12 @@ def mine():
 
     # Send a response with the new block
     response = {
-        'message': "New Block Forged",
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
+        # 'message': "New Block Forged",
+        # 'index': block['index'],
+        # 'transactions': block['transactions'],
+        # 'proof': block['proof'],
+        # 'previous_hash': block['previous_hash'],
+        'proof': proof
     }
     return jsonify(response), 200
 
